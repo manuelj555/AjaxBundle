@@ -1,0 +1,25 @@
+{
+    "name": "manuelj555/ajax-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony AjaxBundle",
+    "keywords": ["ajax", "flash", "bundle", "javascript"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Manuel Aguirre",
+            "email": "programador.manuel@gmail.com",
+            "homepage": "http://manuelj555.github.io/"
+        }
+    ],
+    "require": {
+        "symfony/symfony": "~2.3"
+    },
+    "autoload": {
+        "psr-4": { "Ku\\AjaxBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
