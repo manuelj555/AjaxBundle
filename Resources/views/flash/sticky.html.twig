@@ -1,0 +1,24 @@
+{% block ajax_flash_css -%}
+    <link href="{{ asset('bundles/ku_ajax/vendor/sticky/styles/sticky.min.css" type="text/css') }}/" rel="stylesheet" media="screen"/>
+{%- endblock %}
+
+{% block ajax_flash_js -%}
+    <script src="{{ asset('bundles/ku_ajax/vendor/sticky/sticky.min.js') }}/"></script>
+    <script src="{{ asset('bundles/ku_ajax/js/plugin.js') }}/"></script>
+{%- endblock %}
+
+{% block ajax_flash_plugin -%}
+    <script>
+        jQuery(function($){
+            $.ajaxFlash('*', function(message, type, title, icon){
+                message = title ? '<b>' + title + '</b><br>' + message : message;
+                $.sticky(message, {
+                    stickyClass: type,
+                    title: title,
+                    icon: icon,
+                    {% block ajax_flash_plugin_extra %}{% endblock %}
+                });
+            });
+        });
+    </script>
+{%- endblock %}
