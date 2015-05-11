@@ -42,14 +42,14 @@ class AjaxHandler
         return $this;
     }
 
-    public function errors($errors, $inHtml = false, $statusCode = 400)
+    public function errors($errors, $inHtml = true, $statusCode = 400)
     {
         $this->triggers['errors'] = array((array) $errors, $inHtml, $statusCode);
 
         return $this;
     }
 
-    public function formErros(FormInterface $form, $inHtml = false, $statusCode = 400)
+    public function formErros(FormInterface $form, $inHtml = true, $statusCode = 400)
     {
         $this->triggers['formErrors'] = array($form, $inHtml, $statusCode);
 
