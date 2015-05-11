@@ -1,12 +1,12 @@
 services:
     ku_ajax.flash.ajax_listener:
             class: Ku\AjaxBundle\EventListener\PrepareFlashesListener
-            arguments: [%ku_ajax.flash.flash_mapping%]
+            arguments: [%ku_ajax.flash.mapping%]
             tags:
                 - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     ku_ajax.flash.auto_assets_listener:
         class: Ku\AjaxBundle\EventListener\AutoAssetsListener
-        arguments: [%ku_ajax.flash.flash_mapping%]
+        arguments: [%ku_ajax.flash.mapping%]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
