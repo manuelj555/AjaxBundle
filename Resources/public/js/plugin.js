@@ -77,8 +77,8 @@
     $(document).ajaxComplete(function (event, jqXHR, c) {
         if (jqXHR.getResponseHeader('X-Ajax-Triggers')) {
             var triggers = $.parseJSON(jqXHR.getResponseHeader('X-Ajax-Triggers'));
-            $.each(triggers, function (event, data) {
-                $(document).trigger(event, data);
+            $.each(triggers, function () {
+                $(document).trigger(this[0], this[1]);
             });
         }
         if (jqXHR.getResponseHeader('X-Ajax-Redirect')) {
