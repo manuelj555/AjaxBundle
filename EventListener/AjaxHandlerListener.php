@@ -102,8 +102,8 @@ class AjaxHandlerListener implements EventSubscriberInterface
                 'url' => $response->headers->get('Location'),
             )));
 
-            if ($stopRedirection and $response->headers->has('Location')) {
-                $response->headers->remove('Location');
+            if ($stopRedirection) {
+                $this->stopRedirectTrigger($data, $event);
             }
         }
 
@@ -176,6 +176,7 @@ class AjaxHandlerListener implements EventSubscriberInterface
     {
         if ($event->getResponse()->headers->has('Location')) {
             $event->getResponse()->headers->remove('Location');
+            $event->getResponse()->setStatusCode(Response::HTTP_OK);
         }
     }
 
