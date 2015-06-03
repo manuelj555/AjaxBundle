@@ -27,6 +27,10 @@ class PrepareFlashesListener
             return;
         }
 
+        if($event->getResponse()->isRedirection()){
+            return;
+        }
+
         if (!$event->getRequest()->hasSession()) {
             return;
         }
