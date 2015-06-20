@@ -103,10 +103,7 @@ class AjaxHandlerListener implements EventSubscriberInterface
             )));
 
             if ($stopRedirection) {
-                $status = $response->getStatusCode();
                 $this->stopRedirectTrigger($data, $event);
-                //volvemos a establecer el status code anterior
-                $response->setStatusCode($status);
             }
 
         }
@@ -180,7 +177,6 @@ class AjaxHandlerListener implements EventSubscriberInterface
     {
         if ($event->getResponse()->headers->has('Location')) {
             $event->getResponse()->headers->remove('Location');
-            $event->getResponse()->setStatusCode(Response::HTTP_OK);
         }
     }
 
