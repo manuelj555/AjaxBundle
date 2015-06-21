@@ -3,6 +3,6 @@ services:
         class: Ku\AjaxBundle\AjaxHandler
     ku_ajax.handler_listener:
         class: Ku\AjaxBundle\EventListener\AjaxHandlerListener
-        arguments: [@ku_ajax.handler, @twig, %ku_ajax.handler.stop_redirections%]
+        arguments: [@ku_ajax.handler, @twig]
         tags:
             - { name: kernel.event_subscriber }

@@ -13,6 +13,7 @@ namespace Ku\AjaxBundle;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Manuel Aguirre <programador.manuel@gmail.com>
@@ -35,9 +36,9 @@ class AjaxHandler
         return $this;
     }
 
-    public function stopRedirect()
+    public function stopRedirect($toStatus = Response::HTTP_OK)
     {
-        $this->triggers['stopRedirect'] = true;
+        $this->triggers['stopRedirect'] = $toStatus;
 
         return $this;
     }
