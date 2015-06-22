@@ -25,7 +25,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('handler')
                     ->addDefaultsIfNotSet()
                     ->children()
-//                        ->scalarNode('stop_redirections')->defaultTrue()->end()
+                        ->scalarNode('stop_redirections')->defaultTrue()->end()
                     ->end()
                 ->end()
             ->end();

@@ -81,8 +81,9 @@
                 $(document).trigger(this[0], this[1]);
             });
         }
-        if (jqXHR.status == 278 && jqXHR.getResponseHeader('Location')) {
-            window.location.href = jqXHR.getResponseHeader('Location');
+        if (jqXHR.getResponseHeader('X-Ajax-Redirect')) {
+            var data = $.parseJSON(jqXHR.getResponseHeader('X-Ajax-Redirect'));
+            window.location.href = data.url;
         }
         if (jqXHR.getResponseHeader('X-Ajax-Close-Modal')) {
             var data = $.parseJSON(jqXHR.getResponseHeader('X-Ajax-Close-Modal'));

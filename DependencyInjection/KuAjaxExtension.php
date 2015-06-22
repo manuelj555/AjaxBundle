@@ -25,7 +25,7 @@ class KuAjaxExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-//        $container->setParameter('ku_ajax.handler.stop_redirections', $config['handler']['stop_redirections']);
+        $container->setParameter('ku_ajax.handler.stop_redirections', $config['handler']['stop_redirections']);
 
         $this->addFlashConfig($container, $config['flash_messages'], $loader);
     }

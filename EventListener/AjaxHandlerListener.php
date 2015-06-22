@@ -35,11 +35,13 @@ class AjaxHandlerListener implements EventSubscriberInterface
      * @var \Twig_Environment
      */
     private $twig;
+    private $stopRedirects;
 
-    function __construct($ajaxHandler, $twig)
+    function __construct($ajaxHandler, $twig, $stopRedirects)
     {
         $this->ajaxHandler = $ajaxHandler;
         $this->twig = $twig;
+        $this->stopRedirects = $stopRedirects;
     }
 
     public static function getSubscribedEvents()
@@ -70,6 +72,14 @@ class AjaxHandlerListener implements EventSubscriberInterface
             $method = $name . 'Trigger';
             $this->{$method}($data, $event);
         }
+
+        $response = $event->getResponse();
+
+        if ($this->stopRedirects) {
+            if ($response->headers->has('Location')) {
+                $response->headers->remove('Location');
+            }
+        }
     }
 
     private function eventTrigger($triggers, FilterResponseEvent $event)
@@ -85,15 +95,18 @@ class AjaxHandlerListener implements EventSubscriberInterface
 
         if ($response->headers->has('Location') or $response instanceof RedirectResponse) {
 
-            if ($stopRedirection) {
-                $response = new Response(
-                    $response->getContent(),
-                    $response->getStatusCode(),
-                    $response->headers->all()
-                );
+            $response->setContent($response->headers->get('Location'));
 
-                $response->setStatusCode(278, 'Ajax Redirect');
-                $event->setResponse($response);
+            $response->headers->set('X-Ajax-Redirect', json_encode(array(
+                'success' => $success,
+                'url' => $response->headers->get('Location'),
+            )));
+
+            if ($stopRedirection) {
+                $status = $response->getStatusCode();
+                $this->stopRedirectTrigger($data, $event);
+                //volvemos a establecer el status code anterior
+                $response->setStatusCode($status);
             }
 
         }
@@ -167,7 +180,7 @@ class AjaxHandlerListener implements EventSubscriberInterface
     {
         if ($event->getResponse()->headers->has('Location')) {
             $event->getResponse()->headers->remove('Location');
-            $event->getResponse()->setStatusCode($data);
+            $event->getResponse()->setStatusCode(Response::HTTP_OK);
         }
     }
 
