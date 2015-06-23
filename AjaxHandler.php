@@ -40,6 +40,14 @@ class AjaxHandler
         return $this;
     }
 
+    public function badRequest($statusCode = 400)
+    {
+        $this->isOk = false;
+        $this->statusCode = $statusCode;
+
+        return $this;
+    }
+
     public function redirect($isOk = true, $statusCode = 278)
     {
         if(!$this->isHandled()){
