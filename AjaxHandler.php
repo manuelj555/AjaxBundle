@@ -19,62 +19,64 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class AjaxHandler
 {
-    private $triggers = array();
+    private $statusCode = 200;
+    private $isOk = null;
+    private $error;
 
-    public function trigger($eventName, $data)
+    public function success($statusCode = 200)
     {
-        $this->triggers['event'][] = array($eventName, $data);
+        $this->isOk = true;
+        $this->statusCode = $statusCode;
 
         return $this;
     }
 
-    public function redirect($success = true, $stopRedirection = true)
+    public function error($message, $statusCode = 400)
     {
-        $this->triggers['redirect'] = array($success, $stopRedirection);
+        $this->isOk = false;
+        $this->statusCode = $statusCode;
+        $this->error = $message;
 
         return $this;
     }
 
-    public function stopRedirect()
+    public function redirect($isOk = true, $statusCode = 278)
     {
-        $this->triggers['stopRedirect'] = true;
+        if(!$this->isHandled()){
+            throw new \BadFunctionCallException("Must be call to success or error method first");
+        }
 
-        return $this;
-    }
-
-    public function errors($errors, $inHtml = true, $statusCode = 400)
-    {
-        $this->triggers['errors'] = array((array) $errors, $inHtml, $statusCode);
-
-        return $this;
-    }
-
-    public function formErros(FormInterface $form, $inHtml = true, $statusCode = 400)
-    {
-        $this->triggers['formErrors'] = array($form, $inHtml, $statusCode);
-
-        return $this;
-    }
-
-    public function closeModal($success = true)
-    {
-        $this->triggers['closeModal'] = $success;
+        $this->statusCode = $statusCode;
 
         return $this;
     }
 
     public function isHandled()
     {
-        return count($this->triggers) > 0;
+        return null !== $this->isOk;
     }
 
     public function resetHandler()
     {
-        $this->triggers = array();
+        $this->isOk = null;
+        $this->statusCode = 200;
+        $this->error = null;
+
+        return $this;
     }
 
-    public function getTriggers()
+    public function isOk()
     {
-        return $this->triggers;
+        return $this->isOk;
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->statusCode;
     }
 }
