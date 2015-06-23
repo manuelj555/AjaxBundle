@@ -11,7 +11,7 @@ Add to composer.json:
 ```json
 {
   "require": {
-    "manuelj555/ajax-bundle": "1.0.*@dev"
+    "manuelj555/ajax-bundle": "2.0.*@dev"
   }
 }
 ```
@@ -53,9 +53,6 @@ public function createAction(Request $request)
         'action' => $request->getRequestUri(),
     ));
     $form->handleRequest($request);
-    $this->get('ku_ajax.handler')
-      ->formErros($form, true) //if form is submited and is invalid, this handler send the errors to ajax response;
-      // the second parameter is a boolean (return errors as string or not).
 
     if ($form->isSubmitted() and $form->isValid()) {
         $this->get('fos_user.user_manager')
@@ -63,10 +60,14 @@ public function createAction(Request $request)
 
         $this->addFlash('success', 'User Created!');
 
-        $this->get('ku_ajax.handler')
-          ->closeModal() // distpach a javascript event called "ajax.close_modal"
-          ->stopRedirect(); // remove de header Location from response (only in ajax request)
+        $this->get('ku_ajax.handler')->success();
+        // Calling to succes method on ajax Handler, stop the redirection on ajax request 
+        // and send a status code 200
         return $this->redirectToRoute('admin_company_users_list', array('companyId' => $company->getId()));
+    }elseif($form->isSubmitted()){
+      // invalid form
+      $this->get('ku_ajax.handler')->badRequest();
+      // this send a status code 400
     }
 
     return $this->render('user/create.html.twig', array(
@@ -82,22 +83,14 @@ The View
 $('#user-form').on('submit', 'form', function (e) {
   e.preventDefault();
   var $form = $(this);
-  $.post(this.action, $form.serialize(), function (html, status, request) {
-    $form.replaceWith($(html).find('form'));
-  }).onCloseModal(function () { //this method is called on ajax complete
+  $.post(this.action, $form.serialize(), function () {
+    // this callback is called on success response
     $("#myModal").modal('hide');
-  }).onFormErrors(function (errors, isHtml) { //this method is called when form is invalid
-    /** If the IsHtml argument is true, the errors variable is an object where the indexes is
-     * the id of the form element and the value is an html with the errors.
-     *
-     * If the isHtml argument is false, the errors is and object where the indexes is
-     * the id of the form element and the value is an array of errors.
-     */
-    $form.find('.ajax-form-error').remove();
-    $form.find('.form-group').removeClass('has-error');
-    $.each(errors, function (id, errors) {
-        $("#" + id).after(errors).closest('.form-group').addClass('has-error');
-    });
+  }).fail(function (xhr) { //this method is called on ajax error
+    if(xhr.status == 400){
+     // invalid form data
+      $form.replaceWith($(html).find('form'));
+    }
   });
 });
 ```
@@ -106,12 +99,10 @@ Ajax Handler Methods:
 --------
 
 ```php
-$this->get('ku_ajax.handler')->redirect($success = true, $stopHttpRedirection = true);
-$this->get('ku_ajax.handler')->stopRedirect();
-$this->get('ku_ajax.handler')->errors($arrayOrStringErrors);
-$this->get('ku_ajax.handler')->formErros($formObject, $isHtml = true, $statusCode = 400);
-$this->get('ku_ajax.handler')->closeModal($success = true);
-$this->get('ku_ajax.handler')->trigger($eventName, $data);
+$this->get('ku_ajax.handler')->success($statusCode = 200);
+$this->get('ku_ajax.handler')->error($message, $statusCode = 400)
+$this->get('ku_ajax.handler')->badRequest($statusCode = 400)
+$this->get('ku_ajax.handler')->redirect($isOk = true, $statusCode = 278)
 ```
 
 Flash Messages
