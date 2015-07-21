@@ -69,6 +69,7 @@ class AjaxHandlerListener implements EventSubscriberInterface
         $statusCode = $this->ajaxHandler->getStatusCode();
         $errors = $this->ajaxHandler->getError();
 
+        $response->headers->set('X-Real-Status-Code', $response->getStatusCode());
         $response->setStatusCode($statusCode, $statusCode == 278 ? 'Ajax Redirect' : null);
 
         $response->headers->set('X-Ajax-Handler', true);
