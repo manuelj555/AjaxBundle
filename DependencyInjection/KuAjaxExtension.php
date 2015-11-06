@@ -46,6 +46,7 @@ class KuAjaxExtension extends Extension
         }
 
         $container->setParameter('ku_ajax.flash.mapping', $config['mapping']);
+        $container->setParameter('ku_ajax.flash.translation_domain', $config['translation_domain']);
 
         if (!$config['auto_assets']['enabled']) {
             $container->removeDefinition('ku_ajax.flash.auto_assets_listener');

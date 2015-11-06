@@ -74,6 +74,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
+                        ->scalarNode('translation_domain')->defaultValue('messages')->end()
                     ->end()
                 ->end()
             ->end();

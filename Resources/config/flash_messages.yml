@@ -1,7 +1,7 @@
 services:
     ku_ajax.flash.ajax_listener:
             class: Ku\AjaxBundle\EventListener\PrepareFlashesListener
-            arguments: [%ku_ajax.flash.mapping%]
+            arguments: [%ku_ajax.flash.mapping%, %ku_ajax.flash.translation_domain%, @translator]
             tags:
                 - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -8 }
 
