@@ -12,14 +12,14 @@
         }
     ],
     "require": {
-        "symfony/symfony": "~2.3"
+        "symfony/symfony": "~2.3|~3.0"
     },
     "autoload": {
         "psr-4": { "Ku\\AjaxBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }
