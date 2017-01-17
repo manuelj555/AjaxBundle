@@ -80,7 +80,7 @@ class AutoAssetsListener
                 list($css, $scripts) = $this->injectSticky($publicPath);
             } else {
                 $css = null;
-                $scripts = "<script src=\"{$publicPath}/bundles/ku_ajax/js/plugin.js\"></script>";
+                $scripts = "<script src=\"{$publicPath}/bundles/kuajax/js/plugin.js\"></script>";
             }
 
             $content = $substrFunction($content, 0, $posBody)
@@ -99,14 +99,14 @@ class AutoAssetsListener
     {
         $css
             = <<<HTML
-<link href="{$basePath}/bundles/ku_ajax/vendor/sticky/styles/sticky.min.css" type="text/css" rel="stylesheet" media="screen"/>
+<link href="{$basePath}/bundles/kuajax/vendor/sticky/styles/sticky.min.css" type="text/css" rel="stylesheet" media="screen"/>
 HTML;
 
         $extra = trim($this->sticky, '{}[]');
         $scripts
             = <<<HTML
-<script src="{$basePath}/bundles/ku_ajax/vendor/sticky/sticky.min.js"></script>
-<script src="{$basePath}/bundles/ku_ajax/js/plugin.js"></script>
+<script src="{$basePath}/bundles/kuajax/vendor/sticky/sticky.min.js"></script>
+<script src="{$basePath}/bundles/kuajax/js/plugin.js"></script>
 <script>
 jQuery(function($){
     $.ajaxFlash('*', function(message, type, title, icon){
@@ -129,15 +129,15 @@ HTML;
     {
         $css
             = <<<HTML
-<link href="{$basePath}/bundles/ku_ajax/vendor/pnotify/pnotify.custom.min.css" type="text/css" rel="stylesheet" media="screen"/>
+<link href="{$basePath}/bundles/kuajax/vendor/pnotify/pnotify.custom.min.css" type="text/css" rel="stylesheet" media="screen"/>
 HTML;
 
         $extra = trim($this->pNotify, '{}[]');
 
         $scripts
             = <<<HTML
-<script src="{$basePath}/bundles/ku_ajax/vendor/pnotify/pnotify.custom.min.js"></script>
-<script src="{$basePath}/bundles/ku_ajax/js/plugin.js"></script>
+<script src="{$basePath}/bundles/kuajax/vendor/pnotify/pnotify.custom.min.js"></script>
+<script src="{$basePath}/bundles/kuajax/js/plugin.js"></script>
 <script>
 jQuery(function($){
     $.ajaxFlash('*', function(message, type, title, icon){
