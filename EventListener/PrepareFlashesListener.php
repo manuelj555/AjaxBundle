@@ -1,98 +1,71 @@
 <?php
-/**
- * 03/10/2014
- * open-skool
+/*
+ * This file is part of the Manuel Aguirre Project.
+ *
+ * (c) Manuel Aguirre <programador.manuel@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Ku\AjaxBundle\EventListener;
 
+use Ku\AjaxBundle\AjaxHandler;
+use Ku\AjaxBundle\FlashHandler;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @autor Manuel Aguirre <programador.manuel@gmail.com>
  */
 class PrepareFlashesListener
 {
-    protected $mapping = array();
-    protected $domain;
     /**
-     * @var TranslatorInterface
+     * @var AjaxHandler
      */
-    protected $translator;
+    private $ajaxHandler;
+
+    /**
+     * @var FlashHandler
+     */
+    private $flashHandler;
 
     /**
      * PrepareFlashesListener constructor.
-     * @param array $mapping
-     * @param $domain
-     * @param TranslatorInterface $translator
+     *
+     * @param AjaxHandler $ajaxHandler
+     * @param FlashHandler $flashHandler
      */
-    public function __construct(array $mapping, $domain, TranslatorInterface $translator)
+    public function __construct(AjaxHandler $ajaxHandler, FlashHandler $flashHandler)
     {
-        $this->mapping = $mapping;
-        $this->domain = $domain;
-        $this->translator = $translator;
-
-        $this->initialize();
+        $this->ajaxHandler = $ajaxHandler;
+        $this->flashHandler = $flashHandler;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$event->getRequest()->isXmlHttpRequest()) {
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+
+        if (!$request->isXmlHttpRequest() || $this->ajaxHandler->isIgnoredFlashes()) {
             return;
         }
 
-        if ($event->getResponse()->isRedirection()) {
+        if ($response->isRedirection() || $response->getStatusCode() == 278) {
+            /* Redirección normal o Ajax */
             return;
         }
 
-        if (!$event->getRequest()->hasSession()) {
+        if (!$request->hasSession()) {
             return;
         }
 
-        $session = $event->getRequest()->getSession();
+        $session = $request->getSession();
 
         if (!$session instanceof Session) {
             return;
         }
 
-        $flashes = $session->getFlashBag()->all();
-
-        if (!count($flashes)) {
-            return;
-        }
-
-        $formatted = array();
-        $usedTypes = array();
-
-        foreach ($flashes as $type => $messages) {
-            if (isset($this->mapping[$type])) {
-                $formatted[$this->mapping[$type]['type']] = $messages;
-                $usedTypes[$this->mapping[$type]['type']] = $this->mapping[$type];
-            } else {
-                $formatted[$type] = $messages;
-            }
-        }
-
-        $event->getResponse()
-            ->headers
-            ->set('X-Ajax-Flash', json_encode($formatted));
-        $event->getResponse()
-            ->headers
-            ->set('X-Ajax-Flash-Config', json_encode($usedTypes));
+        $this->flashHandler->handle($session->getFlashBag(), $response);
     }
-
-    private function initialize()
-    {
-        if ($this->domain) {
-            foreach ($this->mapping as $key => $config) {
-                $this->mapping[$key]['title'] = $this->translator->trans(
-                    $config['title'],
-                    array(),
-                    $this->domain
-                );
-            }
-        }
-    }
-} 
+}

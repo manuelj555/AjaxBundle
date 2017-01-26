@@ -1,12 +1,22 @@
 services:
+    ku_ajax.handler.flash:
+        class: Ku\AjaxBundle\FlashHandler
+        arguments:
+            - "%ku_ajax.flash.mapping%"
+            - "%ku_ajax.flash.translation_domain%"
+            - "@translator"
+        public: false
+
     ku_ajax.flash.ajax_listener:
-            class: Ku\AjaxBundle\EventListener\PrepareFlashesListener
-            arguments: [%ku_ajax.flash.mapping%, %ku_ajax.flash.translation_domain%, @translator]
-            tags:
-                - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -8 }
+        class: Ku\AjaxBundle\EventListener\PrepareFlashesListener
+        arguments:
+            - "@ku_ajax.handler"
+            - "@ku_ajax.handler.flash"
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -8 }
 
     ku_ajax.flash.auto_assets_listener:
         class: Ku\AjaxBundle\EventListener\AutoAssetsListener
-        arguments: [%ku_ajax.flash.mapping%]
+        arguments: ["%ku_ajax.flash.mapping%"]
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

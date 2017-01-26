@@ -12,15 +12,8 @@ namespace Ku\AjaxBundle\EventListener;
 
 use Ku\AjaxBundle\AjaxHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-
 
 /**
  * @author Manuel Aguirre <programador.manuel@gmail.com>
@@ -83,7 +76,7 @@ class AjaxHandlerListener implements EventSubscriberInterface
                 $response->setContent(json_encode(iterator_to_array($errors)));
                 $response->headers->set('Content-Type', 'application/json');
             } else {
-                $response->setContent((string) $errors);
+                $response->setContent((string)$errors);
             }
         }
     }

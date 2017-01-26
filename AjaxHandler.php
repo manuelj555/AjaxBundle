@@ -10,10 +10,6 @@
 
 namespace Ku\AjaxBundle;
 
-use Symfony\Component\Form\FormErrorIterator;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 /**
  * @author Manuel Aguirre <programador.manuel@gmail.com>
  */
@@ -22,7 +18,12 @@ class AjaxHandler
     private $statusCode = 200;
     private $isOk = null;
     private $error;
+    private $ignoreFlashes = false;
 
+    /**
+     * @param int $statusCode
+     * @return AjaxHandler
+     */
     public function success($statusCode = 200)
     {
         $this->isOk = true;
@@ -31,6 +32,11 @@ class AjaxHandler
         return $this;
     }
 
+    /**
+     * @param $message
+     * @param int $statusCode
+     * @return AjaxHandler
+     */
     public function error($message, $statusCode = 400)
     {
         $this->isOk = false;
@@ -40,6 +46,10 @@ class AjaxHandler
         return $this;
     }
 
+    /**
+     * @param int $statusCode
+     * @return AjaxHandler
+     */
     public function badRequest($statusCode = 400)
     {
         $this->isOk = false;
@@ -48,9 +58,13 @@ class AjaxHandler
         return $this;
     }
 
-    public function redirect($isOk = true, $statusCode = 278)
+    /**
+     * @param int $statusCode
+     * @return AjaxHandler
+     */
+    public function redirect($statusCode = 278)
     {
-        if(!$this->isHandled()){
+        if (!$this->isHandled()) {
             throw new \BadFunctionCallException("Must be call to success or error method first");
         }
 
@@ -59,32 +73,71 @@ class AjaxHandler
         return $this;
     }
 
+    /**
+     * @param bool $ignore
+     * @return AjaxHandler
+     */
+    public function ignoreFlashes($ignore = true)
+    {
+        if (!$this->isHandled()) {
+            throw new \BadFunctionCallException("Must be call to success or error method first");
+        }
+
+        $this->ignoreFlashes = $ignore;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
     public function isHandled()
     {
         return null !== $this->isOk;
     }
 
+    /**
+     * @return AjaxHandler
+     */
     public function resetHandler()
     {
         $this->isOk = null;
         $this->statusCode = 200;
         $this->error = null;
+        $this->ignoreFlashes = false;
 
         return $this;
     }
 
+    /**
+     * @return null
+     */
     public function isOk()
     {
         return $this->isOk;
     }
 
+    /**
+     * @return mixed
+     */
     public function getError()
     {
         return $this->error;
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIgnoredFlashes()
+    {
+        return $this->ignoreFlashes;
     }
 }
