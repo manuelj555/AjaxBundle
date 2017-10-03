@@ -12,6 +12,7 @@ namespace Ku\AjaxBundle\EventListener;
 
 use Ku\AjaxBundle\AjaxHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -43,8 +44,12 @@ class AjaxHandlerListener implements EventSubscriberInterface
         );
     }
 
-    public function onKernelController()
+    public function onKernelController(FilterControllerEvent $event)
     {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
         $this->ajaxHandler->resetHandler();
     }
 
